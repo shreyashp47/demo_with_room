@@ -11,7 +11,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ConfigRetrofit {
     private static Retrofit retrofit=new Retrofit.Builder()
-            .baseUrl("https://api.github.com/")
+            .baseUrl("https://reqres.in/")
             .addConverterFactory(GsonConverterFactory.create())
             .client(configOkhttp())
             .build();

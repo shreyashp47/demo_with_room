@@ -1,7 +1,5 @@
 package com.shreyash.github_api.adapter;
 
-import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,30 +10,35 @@ import android.widget.TextView;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.shreyash.github_api.GsonStringConvertor;
 import com.shreyash.github_api.R;
-import com.shreyash.github_api.models.GithubUsers;
-import com.shreyash.github_api.ui.ReposFragment;
+import com.shreyash.github_api.models.APIUsers;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.MyViewHolder> {
     private FragmentActivity activity;
-    private List<GithubUsers> githubUsers;
+    private List<APIUsers> apiUsersList;
+    OnLastLocation onLastLocation;
 
 
-    public UserAdapter(FragmentActivity activity, List<GithubUsers> githubUsers) {
+    public UserAdapter(FragmentActivity activity, List<APIUsers> apiUsersList) {
         this.activity = activity;
-        this.githubUsers = githubUsers;
+        this.apiUsersList = apiUsersList;
+        this.onLastLocation = (OnLastLocation) activity;
 
     }
 
     public void onBindViewHolder(MyViewHolder viewHolder, int position) {
-        viewHolder.userName.setText(githubUsers.get(position).getLogin());
+        viewHolder.userName.setText(apiUsersList.get(position).getFirstName() + " "
+                + apiUsersList.get(position).getLastName());
+        viewHolder.userId.setText(apiUsersList.get(position).getEmail());
 
-        Picasso.get().load(githubUsers.get(position).getAvatarUrl()).into(viewHolder.userDp);
+        Picasso.get().load(apiUsersList.get(position).getAvatar()).into(viewHolder.userDp);
 
+        if (position >= apiUsersList.size() - 1) {
+            onLastLocation.lastLocation(position);
+        }
 
     }
 
@@ -46,7 +49,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.MyViewHolder> 
     }
 
     public int getItemCount() {
-        return githubUsers.size();
+        return apiUsersList.size();
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -73,19 +76,15 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.MyViewHolder> 
             int position = getAdapterPosition();
             int id = view.getId();
 
-            if (id==R.id.lay){
-                ReposFragment hotelBookingDetailsFragment = new ReposFragment();
-                Bundle args = new Bundle();
-                args.putString("user", githubUsers.get(position).getLogin());
-                hotelBookingDetailsFragment.setArguments(args);
-                activity.getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.frame, hotelBookingDetailsFragment)
-                        .addToBackStack(null)
-                        .commit();
+            if (id == R.id.lay) {
+
             }
 
         }
+    }
+
+   public interface OnLastLocation {
+        void lastLocation(int pos);
     }
 
 }
